@@ -1,7 +1,7 @@
 import __init__
 from models.database import engine
 from models.model import Subscription
-from sqlmodel import Session
+from sqlmodel import Session, select
 from datetime import date
 
 class SubscriptionSevice:
@@ -13,7 +13,16 @@ class SubscriptionSevice:
             session.add(subscription)
             session.commit()
             return subscription
+        
+    def list_all(self):
+        with Session(self.engine) as session:
+            statement = select(Subscription)
+            results = session.exec(statement).all()
+        return results
+
+    def pay(self, subscription: Subscription):
+        ...
 
 ss = SubscriptionSevice(engine)
-subscription = Subscription(empresa='Netflix', site='Netflix.com.br', data_assinatura=date.today(), valor=29)
-ss.create(subscription)
+# subscription = Subscription(empresa='HBO Max', site='hbomax.com.br', data_assinatura=date.today(), valor=35)
+print(ss.list_all())
